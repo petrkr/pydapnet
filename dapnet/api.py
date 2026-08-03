@@ -3,7 +3,12 @@
 import json
 import requests
 
-from dapnet.errors import DapnetApiError, DapnetAuthError, DapnetRequestError
+from dapnet.errors import (
+    DapnetApiError,
+    DapnetAuthError,
+    DapnetNotFoundError,
+    DapnetRequestError,
+)
 from dapnet.models.calls import Call
 from dapnet.models.core import Stats, Version
 from dapnet.models.news import NewsItem
@@ -160,6 +165,10 @@ class DapnetApi:
                 message = str(payload.get("message") or payload.get("name") or message)
             elif payload:
                 message = str(payload)
+            if response.status_code == 401:
+                raise DapnetAuthError(message)
+            if response.status_code == 404:
+                raise DapnetNotFoundError(response.status_code, message, payload)
             raise DapnetApiError(response.status_code, message, payload)
 
         return payload

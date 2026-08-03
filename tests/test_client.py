@@ -6,7 +6,7 @@ import pytest
 
 import dapnet.api
 from dapnet.api import DapnetApi
-from dapnet.errors import DapnetApiError, DapnetAuthError
+from dapnet.errors import DapnetApiError, DapnetAuthError, DapnetNotFoundError
 
 
 @pytest.fixture(autouse=True)
@@ -184,6 +184,47 @@ def test_api_error() -> None:
     assert repr(exc_info.value) == (
         "DapnetApiError(status_code=403, message='No permission')"
     )
+
+
+def test_unauthorized_response_raises_auth_error() -> None:
+    session = FakeSession(
+        FakeResponse(
+            401,
+            {
+                "code": 4010,
+                "name": "Unauthorized",
+                "message": "Invalid or missing username or password",
+            },
+        )
+    )
+    dapnet.api.requests = session
+    client = DapnetApi("user", "bad")
+
+    with pytest.raises(DapnetAuthError) as exc_info:
+        client.list_rubrics()
+
+    assert str(exc_info.value) == "Invalid or missing username or password"
+
+
+def test_not_found_response_raises_not_found_error() -> None:
+    session = FakeSession(
+        FakeResponse(
+            404,
+            {
+                "code": 4040,
+                "name": "Not Found",
+                "message": "The requested resource could not be found",
+            },
+        )
+    )
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
+
+    with pytest.raises(DapnetNotFoundError) as exc_info:
+        client.get_rubric("missing")
+
+    assert exc_info.value.status_code == 404
+    assert exc_info.value.message == "The requested resource could not be found"
 
 
 def test_list_calls_uses_username_as_default_owner() -> None:

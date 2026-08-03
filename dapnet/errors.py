@@ -35,3 +35,7 @@ class DapnetApiError(DapnetError):
             self.status_code,
             self.message,
         )
+
+
+class DapnetNotFoundError(DapnetApiError):
+    """Raised when the DAPNET API returns 404."""
