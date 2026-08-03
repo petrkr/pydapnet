@@ -1,6 +1,7 @@
 # Testing framework
 pytest
 pytest-cov
+pytest-html
 
 # All runtime dependencies
 -r requirements.txt
