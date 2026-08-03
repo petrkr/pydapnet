@@ -13,6 +13,7 @@ from dapnet.models.calls import Call
 from dapnet.models.core import Stats, Version
 from dapnet.models.news import NewsItem
 from dapnet.models.rubrics import Rubric
+from dapnet.models.transmitters import Transmitter
 from dapnet.models.users import User
 
 
@@ -62,6 +63,17 @@ class DapnetApi:
         """Return DAPNET network statistics."""
 
         return Stats.from_dict(self._get("stats"))
+
+    def list_transmitters(self):
+        """Return all transmitters."""
+
+        data = self._get("transmitters")
+        return [Transmitter.from_dict(item) for item in data]
+
+    def get_transmitter(self, name: str):
+        """Return one transmitter by name."""
+
+        return Transmitter.from_dict(self._get("transmitters/%s" % name))
 
     def list_rubrics(self):
         """Return all visible rubrics."""

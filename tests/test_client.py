@@ -60,6 +60,69 @@ def test_get_version() -> None:
     assert str(version) == repr(version)
 
 
+def test_list_transmitters_without_auth() -> None:
+    session = FakeSession(
+        FakeResponse(
+            200,
+            [
+                {
+                    "name": "db0abc",
+                    "longitude": "14.123",
+                    "latitude": "50.123",
+                    "power": "100",
+                    "nodeName": "node1",
+                    "ownerNames": ["ok1abc"],
+                    "status": "OFFLINE",
+                },
+            ],
+        )
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+
+    transmitters = client.list_transmitters()
+
+    assert len(transmitters) == 1
+    assert transmitters[0].name == "db0abc"
+    assert transmitters[0].node_name == "node1"
+    assert transmitters[0].status == "OFFLINE"
+    assert transmitters[0].owner_names == ["ok1abc"]
+    assert repr(transmitters[0]) == (
+        "Transmitter(name='db0abc', status='OFFLINE', node_name='node1')"
+    )
+    assert "Authorization" not in session.calls[0]["headers"]
+
+
+def test_get_transmitter_without_auth() -> None:
+    session = FakeSession(
+        FakeResponse(
+            200,
+            {
+                "name": "db0abc",
+                "authKey": "secret",
+                "address": {
+                    "ip_addr": "192.0.2.1",
+                    "port": 1337,
+                },
+                "callCount": 666,
+                "status": "ONLINE",
+                "antennaGainDbi": 4.0,
+            },
+        )
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+
+    transmitter = client.get_transmitter("db0abc")
+
+    assert transmitter.name == "db0abc"
+    assert transmitter.auth_key == "secret"
+    assert transmitter.address["port"] == 1337
+    assert transmitter.call_count == 666
+    assert transmitter.antenna_gain_dbi == 4.0
+    assert session.calls[0]["url"] == "https://hampager.de/api/transmitters/db0abc"
+
+
 def test_post_news_payload() -> None:
     response = {
         "text": "Alert",
