@@ -13,6 +13,7 @@ from dapnet.models.calls import Call
 from dapnet.models.core import Stats, Version
 from dapnet.models.news import NewsItem
 from dapnet.models.rubrics import Rubric
+from dapnet.models.users import User
 
 
 class DapnetApi:
@@ -57,6 +58,18 @@ class DapnetApi:
 
         self._require_auth()
         return Rubric.from_dict(self._get("rubrics/%s" % name))
+
+    def list_users(self):
+        """Return all visible users."""
+
+        self._require_auth()
+        return [User.from_dict(item) for item in self._get("users")]
+
+    def get_user(self, username: str):
+        """Return one user by username."""
+
+        self._require_auth()
+        return User.from_dict(self._get("users/%s" % username))
 
     def list_news(self):
         """Return news items grouped by rubric."""
