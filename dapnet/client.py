@@ -94,8 +94,8 @@ class DapnetClient:
         self._require_auth()
         payload = {
             "text": text,
-            "callSignNames": call_sign_names,
-            "transmitterGroupNames": transmitter_group_names,
+            "callSignNames": _list_value(call_sign_names),
+            "transmitterGroupNames": _list_value(transmitter_group_names),
             "emergency": emergency,
         }
         return Call.from_dict(self._post("calls", json=payload))
@@ -151,6 +151,16 @@ class DapnetClient:
 
 def _json_dumps(value):
     return json.dumps(value, separators=(",", ":"))
+
+
+def _list_value(value):
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    if isinstance(value, tuple):
+        return list(value)
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 
 def _base64_encode(data):
