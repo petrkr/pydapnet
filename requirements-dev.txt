@@ -4,3 +4,4 @@ pytest-cov
 
 # All runtime dependencies
 -r requirements.txt
+-e .
