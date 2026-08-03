@@ -77,6 +77,55 @@ def test_post_news_payload() -> None:
     }
 
 
+def test_get_news_skips_empty_items() -> None:
+    session = FakeSession(
+        FakeResponse(
+            200,
+            [
+                None,
+                {
+                    "text": "Alert",
+                    "rubricName": "chmi",
+                    "number": 2,
+                },
+            ],
+        )
+    )
+    dapnet.client.requests = session
+    client = DapnetClient("user", "pass")
+
+    news = client.get_news("chmi")
+
+    assert len(news) == 1
+    assert news[0].text == "Alert"
+    assert news[0].number == 2
+
+
+def test_list_news_returns_grouped_response() -> None:
+    session = FakeSession(
+        FakeResponse(
+            200,
+            {
+                "chmi": [
+                    {
+                        "text": "Alert",
+                        "rubricName": "chmi",
+                        "number": 1,
+                    },
+                ]
+            },
+        )
+    )
+    dapnet.client.requests = session
+    client = DapnetClient("user", "pass")
+
+    news = client.list_news()
+
+    assert len(news["chmi"]) == 1
+    assert news["chmi"][0].rubric_name == "chmi"
+    assert news["chmi"][0].number == 1
+
+
 def test_post_call_accepts_single_call_sign_and_group() -> None:
     response = {
         "text": "Hello from PyDapnet library",

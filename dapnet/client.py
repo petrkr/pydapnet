@@ -53,13 +53,22 @@ class DapnetClient:
         self._require_auth()
         return Rubric.from_dict(self._get("rubrics/%s" % name))
 
-    def list_news(self, rubric_name: str = None):
-        """Return news items, optionally filtered by rubric."""
+    def list_news(self):
+        """Return news items grouped by rubric."""
 
         self._require_auth()
-        params = {"rubricName": rubric_name} if rubric_name else None
-        data = self._get("news", params=params)
-        return [NewsItem.from_dict(item) for item in data]
+        data = self._get("news")
+        return {
+            name: [NewsItem.from_dict(item) for item in items if item]
+            for name, items in data.items()
+        }
+
+    def get_news(self, rubric_name: str):
+        """Return news items for one rubric."""
+
+        self._require_auth()
+        data = self._get("news", params={"rubricName": rubric_name})
+        return [NewsItem.from_dict(item) for item in data if item]
 
     def post_news(self, rubric_name: str, text: str, number: int):
         """Publish a news item to a rubric."""
