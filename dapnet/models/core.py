@@ -34,7 +34,7 @@ class Stats(Model):
         users: int,
         calls: int,
         calls_total: int,
-        call_signs: int,
+        callsigns: int,
         news: int,
         news_total: int,
         rubrics: int,
@@ -48,7 +48,7 @@ class Stats(Model):
         self.users = users
         self.calls = calls
         self.calls_total = calls_total
-        self.call_signs = call_signs
+        self.callsigns = callsigns
         self.news = news
         self.news_total = news_total
         self.rubrics = rubrics
@@ -63,7 +63,7 @@ class Stats(Model):
             users=int(data["users"]),
             calls=int(data["calls"]),
             calls_total=int(data["callsTotal"]),
-            call_signs=int(data["callSigns"]),
+            callsigns=int(data["callSigns"]),
             news=int(data["news"]),
             news_total=int(data["newsTotal"]),
             rubrics=int(data["rubrics"]),

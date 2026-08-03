@@ -10,8 +10,10 @@ from dapnet.errors import (
     DapnetRequestError,
 )
 from dapnet.models.calls import Call
+from dapnet.models.callsigns import Callsign
 from dapnet.models.core import Stats, Version
 from dapnet.models.news import NewsItem
+from dapnet.models.nodes import Node
 from dapnet.models.rubrics import Rubric
 from dapnet.models.transmitter_groups import TransmitterGroup
 from dapnet.models.transmitters import Transmitter
@@ -89,6 +91,32 @@ class DapnetApi:
         self._require_auth()
         return TransmitterGroup.from_dict(self._get("transmitterGroups/%s" % name))
 
+    def list_nodes(self):
+        """Return all visible nodes."""
+
+        self._require_auth()
+        data = self._get("nodes")
+        return [Node.from_dict(item) for item in data]
+
+    def get_node(self, name: str):
+        """Return one node by name."""
+
+        self._require_auth()
+        return Node.from_dict(self._get("nodes/%s" % name))
+
+    def list_callsigns(self):
+        """Return all visible callsigns."""
+
+        self._require_auth()
+        data = self._get("callsigns")
+        return [Callsign.from_dict(item) for item in data]
+
+    def get_callsign(self, name: str):
+        """Return one callsign by name."""
+
+        self._require_auth()
+        return Callsign.from_dict(self._get("callsigns/%s" % name))
+
     def list_rubrics(self):
         """Return all visible rubrics."""
 
@@ -158,20 +186,20 @@ class DapnetApi:
     def post_call(
         self,
         text: str,
-        call_sign_names,
+        callsign_names,
         transmitter_group_names,
         emergency: bool = False,
     ):
         """Create and distribute a DAPNET call.
 
-        ``call_sign_names`` and ``transmitter_group_names`` may be lists,
+        ``callsign_names`` and ``transmitter_group_names`` may be lists,
         tuples, or comma-separated strings.
         """
 
         self._require_auth()
         payload = {
             "text": text,
-            "callSignNames": _list_value(call_sign_names),
+            "callSignNames": _list_value(callsign_names),
             "transmitterGroupNames": _list_value(transmitter_group_names),
             "emergency": emergency,
         }

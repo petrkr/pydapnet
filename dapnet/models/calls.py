@@ -6,12 +6,12 @@ from dapnet.models.base import Model
 class Call(Model):
     """DAPNET call."""
 
-    _repr_attrs = ("call_sign_names", "transmitter_group_names", "emergency", "text")
+    _repr_attrs = ("callsign_names", "transmitter_group_names", "emergency", "text")
 
     def __init__(
         self,
         text: str,
-        call_sign_names,
+        callsign_names,
         transmitter_group_names,
         emergency: bool = False,
         timestamp: str = None,
@@ -20,7 +20,7 @@ class Call(Model):
     ):
         Model.__init__(self, raw)
         self.text = text
-        self.call_sign_names = call_sign_names
+        self.callsign_names = callsign_names
         self.transmitter_group_names = transmitter_group_names
         self.emergency = emergency
         self.timestamp = timestamp
@@ -30,7 +30,7 @@ class Call(Model):
     def from_dict(cls, data):
         return cls(
             text=str(data["text"]),
-            call_sign_names=list(data.get("callSignNames", [])),
+            callsign_names=list(data.get("callSignNames", [])),
             transmitter_group_names=list(data.get("transmitterGroupNames", [])),
             emergency=bool(data.get("emergency", False)),
             timestamp=data.get("timestamp"),

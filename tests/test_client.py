@@ -181,6 +181,134 @@ def test_get_transmitter_group() -> None:
     assert session.calls[1]["url"] == "https://hampager.de/api/transmitterGroups/ok-all"
 
 
+def test_list_nodes() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                200,
+                [
+                    {
+                        "name": "db0sda",
+                        "version": "1.1.5.5",
+                        "status": "ONLINE",
+                        "longitude": "14.480907",
+                        "latitude": "50.09272",
+                        "ownerNames": ["admin"],
+                        "address": {
+                            "ip_addr": "192.0.2.1",
+                            "port": 8080,
+                        },
+                    },
+                ],
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    nodes = client.list_nodes()
+
+    assert len(nodes) == 1
+    assert nodes[0].name == "db0sda"
+    assert nodes[0].status == "ONLINE"
+    assert nodes[0].version == "1.1.5.5"
+    assert nodes[0].address["port"] == 8080
+    assert nodes[0].owner_names == ["admin"]
+    assert repr(nodes[0]) == "Node(name='db0sda', status='ONLINE', version='1.1.5.5')"
+    assert session.calls[1]["url"] == "https://hampager.de/api/nodes"
+
+
+def test_get_node() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                200,
+                {
+                    "name": "db0sda",
+                    "version": "1.1.5.5",
+                    "status": "ONLINE",
+                    "longitude": "14.480907",
+                    "latitude": "50.09272",
+                    "ownerNames": ["admin"],
+                },
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    node = client.get_node("db0sda")
+
+    assert node.name == "db0sda"
+    assert node.longitude == "14.480907"
+    assert node.latitude == "50.09272"
+    assert session.calls[1]["url"] == "https://hampager.de/api/nodes/db0sda"
+
+
+def test_list_callsigns() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                200,
+                [
+                    {
+                        "name": "ok1pkr",
+                        "description": "Petr",
+                        "numeric": False,
+                        "ownerNames": ["ok1pkr"],
+                    },
+                ],
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    callsigns = client.list_callsigns()
+
+    assert len(callsigns) == 1
+    assert callsigns[0].name == "ok1pkr"
+    assert callsigns[0].description == "Petr"
+    assert callsigns[0].numeric is False
+    assert callsigns[0].owner_names == ["ok1pkr"]
+    assert repr(callsigns[0]) == (
+        "Callsign(name='ok1pkr', description='Petr', numeric=False)"
+    )
+    assert session.calls[1]["url"] == "https://hampager.de/api/callsigns"
+
+
+def test_get_callsign() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                200,
+                {
+                    "name": "ok1pkr",
+                    "description": "Petr",
+                    "numeric": False,
+                    "ownerNames": ["ok1pkr"],
+                },
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    callsign = client.get_callsign("ok1pkr")
+
+    assert callsign.name == "ok1pkr"
+    assert callsign.owner_names == ["ok1pkr"]
+    assert session.calls[1]["url"] == "https://hampager.de/api/callsigns/ok1pkr"
+
+
 def test_post_news_payload() -> None:
     response = {
         "text": "Alert",
@@ -382,7 +510,7 @@ def test_logout_clears_credentials() -> None:
     assert len(session.calls) == 1
 
 
-def test_post_call_accepts_single_call_sign_and_group() -> None:
+def test_post_call_accepts_single_callsign_and_group() -> None:
     response = {
         "text": "Hello from PyDapnet library",
         "callSignNames": ["ok1pkr"],
@@ -396,7 +524,7 @@ def test_post_call_accepts_single_call_sign_and_group() -> None:
 
     call = client.post_call("Hello from PyDapnet library", "ok1pkr", "ok-all")
 
-    assert call.call_sign_names == ["ok1pkr"]
+    assert call.callsign_names == ["ok1pkr"]
     assert json.loads(session.calls[1]["data"]) == {
         "text": "Hello from PyDapnet library",
         "callSignNames": ["ok1pkr"],
