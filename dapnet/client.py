@@ -4,7 +4,10 @@ import json
 import requests
 
 from dapnet.errors import DapnetApiError, DapnetAuthError, DapnetRequestError
-from dapnet.models import Call, NewsItem, Rubric, Stats, Version
+from dapnet.models.calls import Call
+from dapnet.models.core import Stats, Version
+from dapnet.models.news import NewsItem
+from dapnet.models.rubrics import Rubric
 
 
 class DapnetClient:
