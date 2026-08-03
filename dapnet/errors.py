@@ -12,7 +12,7 @@ class DapnetRequestError(DapnetError):
 class DapnetAuthError(DapnetError):
     """Raised when credentials are required but missing."""
 
-    def __init__(self, message: str = "username and password are required"):
+    def __init__(self, message: str = "login required"):
         super().__init__(message)
         self.message = message
 

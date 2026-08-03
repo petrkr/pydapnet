@@ -244,7 +244,7 @@ def test_failed_login_clears_credentials() -> None:
     with pytest.raises(DapnetAuthError) as exc_info:
         client.list_calls()
 
-    assert str(exc_info.value) == "username and password are required"
+    assert str(exc_info.value) == "login required"
     assert len(session.calls) == 1
 
 
@@ -393,9 +393,9 @@ def test_list_calls_requires_auth_without_username() -> None:
     with pytest.raises(DapnetAuthError) as exc_info:
         client.list_calls()
 
-    assert str(exc_info.value) == "username and password are required"
+    assert str(exc_info.value) == "login required"
     assert repr(exc_info.value) == (
-        "DapnetAuthError(message='username and password are required')"
+        "DapnetAuthError(message='login required')"
     )
     assert session.calls == []
 
