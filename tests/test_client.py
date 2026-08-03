@@ -123,6 +123,64 @@ def test_get_transmitter_without_auth() -> None:
     assert session.calls[0]["url"] == "https://hampager.de/api/transmitters/db0abc"
 
 
+def test_list_transmitter_groups() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                200,
+                [
+                    {
+                        "name": "ok-all",
+                        "description": "OK all",
+                        "transmitterNames": ["ok1aaa", "ok2bbb"],
+                        "ownerNames": ["ok1abc"],
+                    },
+                ],
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    groups = client.list_transmitter_groups()
+
+    assert len(groups) == 1
+    assert groups[0].name == "ok-all"
+    assert groups[0].description == "OK all"
+    assert groups[0].transmitter_names == ["ok1aaa", "ok2bbb"]
+    assert groups[0].owner_names == ["ok1abc"]
+    assert repr(groups[0]) == "TransmitterGroup(name='ok-all', description='OK all')"
+    assert session.calls[1]["url"] == "https://hampager.de/api/transmitterGroups"
+
+
+def test_get_transmitter_group() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                200,
+                {
+                    "name": "ok-all",
+                    "description": "OK all",
+                    "transmitterNames": ["ok1aaa"],
+                    "ownerNames": ["ok1abc"],
+                },
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    group = client.get_transmitter_group("ok-all")
+
+    assert group.name == "ok-all"
+    assert group.transmitter_names == ["ok1aaa"]
+    assert session.calls[1]["url"] == "https://hampager.de/api/transmitterGroups/ok-all"
+
+
 def test_post_news_payload() -> None:
     response = {
         "text": "Alert",

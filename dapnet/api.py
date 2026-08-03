@@ -13,6 +13,7 @@ from dapnet.models.calls import Call
 from dapnet.models.core import Stats, Version
 from dapnet.models.news import NewsItem
 from dapnet.models.rubrics import Rubric
+from dapnet.models.transmitter_groups import TransmitterGroup
 from dapnet.models.transmitters import Transmitter
 from dapnet.models.users import User
 
@@ -74,6 +75,19 @@ class DapnetApi:
         """Return one transmitter by name."""
 
         return Transmitter.from_dict(self._get("transmitters/%s" % name))
+
+    def list_transmitter_groups(self):
+        """Return all visible transmitter groups."""
+
+        self._require_auth()
+        data = self._get("transmitterGroups")
+        return [TransmitterGroup.from_dict(item) for item in data]
+
+    def get_transmitter_group(self, name: str):
+        """Return one transmitter group by name."""
+
+        self._require_auth()
+        return TransmitterGroup.from_dict(self._get("transmitterGroups/%s" % name))
 
     def list_rubrics(self):
         """Return all visible rubrics."""
