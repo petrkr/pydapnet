@@ -77,6 +77,49 @@ def test_post_news_payload() -> None:
     }
 
 
+def test_post_call_accepts_single_call_sign_and_group() -> None:
+    response = {
+        "text": "Hello from PyDapnet library",
+        "callSignNames": ["ok1pkr"],
+        "transmitterGroupNames": ["ok-all"],
+        "emergency": False,
+    }
+    session = FakeSession(FakeResponse(200, response))
+    dapnet.client.requests = session
+    client = DapnetClient("user", "pass")
+
+    call = client.post_call("Hello from PyDapnet library", "ok1pkr", "ok-all")
+
+    assert call.call_sign_names == ["ok1pkr"]
+    assert json.loads(session.calls[0]["data"]) == {
+        "text": "Hello from PyDapnet library",
+        "callSignNames": ["ok1pkr"],
+        "transmitterGroupNames": ["ok-all"],
+        "emergency": False,
+    }
+
+
+def test_post_call_accepts_comma_separated_values() -> None:
+    response = {
+        "text": "Hello",
+        "callSignNames": ["ok1aaa", "ok2bbb"],
+        "transmitterGroupNames": ["ok-all", "dl-all"],
+        "emergency": False,
+    }
+    session = FakeSession(FakeResponse(200, response))
+    dapnet.client.requests = session
+    client = DapnetClient("user", "pass")
+
+    client.post_call("Hello", "ok1aaa, ok2bbb", "ok-all,dl-all")
+
+    assert json.loads(session.calls[0]["data"]) == {
+        "text": "Hello",
+        "callSignNames": ["ok1aaa", "ok2bbb"],
+        "transmitterGroupNames": ["ok-all", "dl-all"],
+        "emergency": False,
+    }
+
+
 def test_api_error() -> None:
     session = FakeSession(
         FakeResponse(403, {"code": 4030, "name": "Forbidden", "message": "No permission"})
