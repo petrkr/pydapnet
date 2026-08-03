@@ -21,20 +21,37 @@ class DapnetApi:
 
     def __init__(
         self,
-        username: str = None,
-        password: str = None,
         base_url: str = "https://hampager.de/api",
         timeout: int = 10,
     ):
-        self._username = username
-        self._password = password
         self._base_url = base_url.rstrip("/") + "/"
         self._timeout = timeout
-        self._headers = {}
-        if username and password:
-            token = ("%s:%s" % (username, password)).encode("utf-8")
-            self._headers["Authorization"] = "Basic " + _base64_encode(token)
-        self._headers["Accept"] = "application/json"
+        self._username = None
+        self._password = None
+        self._headers = {"Accept": "application/json"}
+
+    def login(self, username: str, password: str):
+        """Set and validate credentials.
+
+        Returns the authenticated user.
+        """
+
+        self._username = username
+        self._password = password
+        token = ("%s:%s" % (username, password)).encode("utf-8")
+        self._headers["Authorization"] = "Basic " + _base64_encode(token)
+        try:
+            return self.get_user(username)
+        except Exception:
+            self.logout()
+            raise
+
+    def logout(self):
+        """Clear configured credentials."""
+
+        self._username = None
+        self._password = None
+        self._headers.pop("Authorization", None)
 
     def get_version(self):
         """Return DAPNET Core and API version."""
