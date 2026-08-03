@@ -15,10 +15,10 @@ class Node(Model):
         status: str = None,
         longitude: str = None,
         latitude: str = None,
-        owner_names=None,
-        address=None,
+        owner_names: list[str] = None,
+        address: dict = None,
         raw=None,
-    ):
+    ) -> None:
         Model.__init__(self, raw)
         self.name = name
         self.version = version
@@ -29,7 +29,7 @@ class Node(Model):
         self.address = address
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "Node":
         return cls(
             name=data["name"],
             version=data.get("version"),

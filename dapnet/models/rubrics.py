@@ -12,11 +12,11 @@ class Rubric(Model):
         self,
         name: str,
         number: int,
-        transmitter_group_names,
+        transmitter_group_names: list[str],
         label: str,
-        owner_names,
+        owner_names: list[str],
         raw=None,
-    ):
+    ) -> None:
         Model.__init__(self, raw)
         self.name = name
         self.number = number
@@ -25,7 +25,7 @@ class Rubric(Model):
         self.owner_names = owner_names
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "Rubric":
         return cls(
             name=str(data["name"]),
             number=int(data["number"]),

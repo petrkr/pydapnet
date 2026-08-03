@@ -13,9 +13,9 @@ class Callsign(Model):
         name: str,
         description: str = None,
         numeric: bool = False,
-        owner_names=None,
+        owner_names: list[str] = None,
         raw=None,
-    ):
+    ) -> None:
         Model.__init__(self, raw)
         self.name = name
         self.description = description
@@ -23,7 +23,7 @@ class Callsign(Model):
         self.owner_names = owner_names or []
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "Callsign":
         return cls(
             name=data["name"],
             description=data.get("description"),

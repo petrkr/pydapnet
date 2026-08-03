@@ -16,9 +16,9 @@ class Transmitter(Model):
         latitude: str = None,
         power: str = None,
         node_name: str = None,
-        address=None,
+        address: dict = None,
         time_slot: str = None,
-        owner_names=None,
+        owner_names: list[str] = None,
         device_type: str = None,
         device_version: str = None,
         call_count: int = None,
@@ -26,14 +26,14 @@ class Transmitter(Model):
         antenna_above_ground_level: int = None,
         antenna_type: str = None,
         antenna_direction: int = None,
-        antenna_gain_dbi=None,
+        antenna_gain_dbi: float = None,
         last_update: str = None,
         usage: str = None,
         identification_address: int = None,
         last_connected: str = None,
         connected_since: str = None,
         raw=None,
-    ):
+    ) -> None:
         Model.__init__(self, raw)
         self.name = name
         self.auth_key = auth_key
@@ -59,7 +59,7 @@ class Transmitter(Model):
         self.connected_since = connected_since
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "Transmitter":
         return cls(
             name=data["name"],
             auth_key=data.get("authKey"),

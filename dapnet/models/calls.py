@@ -11,13 +11,13 @@ class Call(Model):
     def __init__(
         self,
         text: str,
-        callsign_names,
-        transmitter_group_names,
+        callsign_names: list[str],
+        transmitter_group_names: list[str],
         emergency: bool = False,
         timestamp: str = None,
         owner_name: str = None,
         raw=None,
-    ):
+    ) -> None:
         Model.__init__(self, raw)
         self.text = text
         self.callsign_names = callsign_names
@@ -27,7 +27,7 @@ class Call(Model):
         self.owner_name = owner_name
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "Call":
         return cls(
             text=str(data["text"]),
             callsign_names=list(data.get("callSignNames", [])),

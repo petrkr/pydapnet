@@ -37,18 +37,18 @@ class DapnetApi:
         self._headers = {"Accept": "application/json"}
 
     @property
-    def user(self):
+    def user(self) -> User:
         """Return the authenticated user or ``None``."""
 
         return self._user
 
     @property
-    def logged_in(self):
+    def logged_in(self) -> bool:
         """Return ``True`` when the client has an authenticated user."""
 
         return self._user is not None
 
-    def login(self, username: str, password: str):
+    def login(self, username: str, password: str) -> User:
         """Set and validate credentials.
 
         Returns the authenticated user.
@@ -65,7 +65,7 @@ class DapnetApi:
             self.logout()
             raise
 
-    def logout(self):
+    def logout(self) -> None:
         """Clear configured credentials."""
 
         self._username = None
@@ -73,92 +73,92 @@ class DapnetApi:
         self._user = None
         self._headers.pop("Authorization", None)
 
-    def get_version(self):
+    def get_version(self) -> Version:
         """Return DAPNET Core and API version."""
 
         return Version.from_dict(self._get("core/version"))
 
-    def get_stats(self):
+    def get_stats(self) -> Stats:
         """Return DAPNET network statistics."""
 
         return Stats.from_dict(self._get("stats"))
 
-    def list_transmitters(self):
+    def list_transmitters(self) -> list[Transmitter]:
         """Return all transmitters."""
 
         data = self._get("transmitters")
         return [Transmitter.from_dict(item) for item in data]
 
-    def get_transmitter(self, name: str):
+    def get_transmitter(self, name: str) -> Transmitter:
         """Return one transmitter by name."""
 
         return Transmitter.from_dict(self._get("transmitters/%s" % name))
 
-    def list_transmitter_groups(self):
+    def list_transmitter_groups(self) -> list[TransmitterGroup]:
         """Return all visible transmitter groups."""
 
         self._require_auth()
         data = self._get("transmitterGroups")
         return [TransmitterGroup.from_dict(item) for item in data]
 
-    def get_transmitter_group(self, name: str):
+    def get_transmitter_group(self, name: str) -> TransmitterGroup:
         """Return one transmitter group by name."""
 
         self._require_auth()
         return TransmitterGroup.from_dict(self._get("transmitterGroups/%s" % name))
 
-    def list_nodes(self):
+    def list_nodes(self) -> list[Node]:
         """Return all visible nodes."""
 
         self._require_auth()
         data = self._get("nodes")
         return [Node.from_dict(item) for item in data]
 
-    def get_node(self, name: str):
+    def get_node(self, name: str) -> Node:
         """Return one node by name."""
 
         self._require_auth()
         return Node.from_dict(self._get("nodes/%s" % name))
 
-    def list_callsigns(self):
+    def list_callsigns(self) -> list[Callsign]:
         """Return all visible callsigns."""
 
         self._require_auth()
         data = self._get("callsigns")
         return [Callsign.from_dict(item) for item in data]
 
-    def get_callsign(self, name: str):
+    def get_callsign(self, name: str) -> Callsign:
         """Return one callsign by name."""
 
         self._require_auth()
         return Callsign.from_dict(self._get("callsigns/%s" % name))
 
-    def list_rubrics(self):
+    def list_rubrics(self) -> list[Rubric]:
         """Return all visible rubrics."""
 
         self._require_auth()
         data = self._get("rubrics")
         return [Rubric.from_dict(item) for item in data]
 
-    def get_rubric(self, name: str):
+    def get_rubric(self, name: str) -> Rubric:
         """Return one rubric by name."""
 
         self._require_auth()
         return Rubric.from_dict(self._get("rubrics/%s" % name))
 
-    def list_users(self):
+    def list_users(self) -> list[User]:
         """Return all visible users."""
 
         self._require_auth()
         return [User.from_dict(item) for item in self._get("users")]
 
-    def get_user(self, username: str):
+    def get_user(self, username: str) -> User:
         """Return one user by username."""
 
         self._require_auth()
         return User.from_dict(self._get("users/%s" % username))
 
-    def list_news(self):
+    def list_news(self) -> dict[str, list[NewsItem]]:
         """Return news items grouped by rubric."""
 
         self._require_auth()
@@ -168,14 +168,14 @@ class DapnetApi:
             for name, items in data.items()
         }
 
-    def get_news(self, rubric_name: str):
+    def get_news(self, rubric_name: str) -> list[NewsItem]:
         """Return news items for one rubric."""
 
         self._require_auth()
         data = self._get("news", params={"rubricName": rubric_name})
         return [NewsItem.from_dict(item) for item in data if item]
 
-    def post_news(self, rubric_name: str, text: str, number: int):
+    def post_news(self, rubric_name: str, text: str, number: int) -> NewsItem:
         """Publish a news item to a rubric."""
 
         self._require_auth()
@@ -186,7 +186,11 @@ class DapnetApi:
         }
         return NewsItem.from_dict(self._post("news", json=payload))
 
-    def activate_rubrics(self, number: int, transmitter_group_names):
+    def activate_rubrics(
+        self,
+        number: int,
+        transmitter_group_names,
+    ) -> Activation:
         """Send an activation call to a Skyper.
 
         After successful reception, rubrics can be selected from the Skyper
@@ -203,7 +207,7 @@ class DapnetApi:
         }
         return Activation.from_dict(self._post("activation", json=payload))
 
-    def list_calls(self, owner_name: str = None):
+    def list_calls(self, owner_name: str = None) -> list[Call]:
         """Return calls owned by a user.
 
         ``owner_name`` defaults to the client username when set to ``None``.
@@ -222,7 +226,7 @@ class DapnetApi:
         callsign_names,
         transmitter_group_names,
         emergency: bool = False,
-    ):
+    ) -> Call:
         """Create and distribute a DAPNET call.
 
         ``callsign_names`` and ``transmitter_group_names`` may be lists,

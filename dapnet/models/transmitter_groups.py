@@ -12,10 +12,10 @@ class TransmitterGroup(Model):
         self,
         name: str,
         description: str = None,
-        transmitter_names=None,
-        owner_names=None,
+        transmitter_names: list[str] = None,
+        owner_names: list[str] = None,
         raw=None,
-    ):
+    ) -> None:
         Model.__init__(self, raw)
         self.name = name
         self.description = description
@@ -23,7 +23,7 @@ class TransmitterGroup(Model):
         self.owner_names = owner_names or []
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: dict) -> "TransmitterGroup":
         return cls(
             name=data["name"],
             description=data.get("description"),
