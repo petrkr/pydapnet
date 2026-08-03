@@ -4,16 +4,16 @@ from typing import Any
 
 import pytest
 
-import dapnet.client
-from dapnet.client import DapnetClient
+import dapnet.api
+from dapnet.api import DapnetApi
 from dapnet.errors import DapnetApiError, DapnetAuthError
 
 
 @pytest.fixture(autouse=True)
 def restore_requests():
-    original = dapnet.client.requests
+    original = dapnet.api.requests
     yield
-    dapnet.client.requests = original
+    dapnet.api.requests = original
 
 
 @dataclass
@@ -41,8 +41,8 @@ class FakeSession:
 
 def test_get_version() -> None:
     session = FakeSession(FakeResponse(200, {"core": "1.1.5.5", "api": "1.1.5"}))
-    dapnet.client.requests = session
-    client = DapnetClient()
+    dapnet.api.requests = session
+    client = DapnetApi()
 
     version = client.get_version()
 
@@ -61,8 +61,8 @@ def test_post_news_payload() -> None:
         "ownerName": "ok1abc",
     }
     session = FakeSession(FakeResponse(200, response))
-    dapnet.client.requests = session
-    client = DapnetClient("user", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
 
     news = client.post_news("chmi", "Alert", 1)
 
@@ -91,8 +91,8 @@ def test_get_news_skips_empty_items() -> None:
             ],
         )
     )
-    dapnet.client.requests = session
-    client = DapnetClient("user", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
 
     news = client.get_news("chmi")
 
@@ -116,8 +116,8 @@ def test_list_news_returns_grouped_response() -> None:
             },
         )
     )
-    dapnet.client.requests = session
-    client = DapnetClient("user", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
 
     news = client.list_news()
 
@@ -134,8 +134,8 @@ def test_post_call_accepts_single_call_sign_and_group() -> None:
         "emergency": False,
     }
     session = FakeSession(FakeResponse(200, response))
-    dapnet.client.requests = session
-    client = DapnetClient("user", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
 
     call = client.post_call("Hello from PyDapnet library", "ok1pkr", "ok-all")
 
@@ -156,8 +156,8 @@ def test_post_call_accepts_comma_separated_values() -> None:
         "emergency": False,
     }
     session = FakeSession(FakeResponse(200, response))
-    dapnet.client.requests = session
-    client = DapnetClient("user", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
 
     client.post_call("Hello", "ok1aaa, ok2bbb", "ok-all,dl-all")
 
@@ -173,8 +173,8 @@ def test_api_error() -> None:
     session = FakeSession(
         FakeResponse(403, {"code": 4030, "name": "Forbidden", "message": "No permission"})
     )
-    dapnet.client.requests = session
-    client = DapnetClient("user", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("user", "pass")
 
     with pytest.raises(DapnetApiError) as exc_info:
         client.list_news()
@@ -188,8 +188,8 @@ def test_api_error() -> None:
 
 def test_list_calls_uses_username_as_default_owner() -> None:
     session = FakeSession(FakeResponse(200, []))
-    dapnet.client.requests = session
-    client = DapnetClient("ok1abc", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("ok1abc", "pass")
 
     calls = client.list_calls()
 
@@ -199,8 +199,8 @@ def test_list_calls_uses_username_as_default_owner() -> None:
 
 def test_list_calls_requires_auth_without_username() -> None:
     session = FakeSession(FakeResponse(200, []))
-    dapnet.client.requests = session
-    client = DapnetClient()
+    dapnet.api.requests = session
+    client = DapnetApi()
 
     with pytest.raises(DapnetAuthError) as exc_info:
         client.list_calls()
@@ -223,8 +223,8 @@ def test_list_calls_other_owner_forbidden() -> None:
             },
         )
     )
-    dapnet.client.requests = session
-    client = DapnetClient("ok1abc", "pass")
+    dapnet.api.requests = session
+    client = DapnetApi("ok1abc", "pass")
 
     with pytest.raises(DapnetApiError) as exc_info:
         client.list_calls("ok0yyy")

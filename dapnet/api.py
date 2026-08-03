@@ -1,4 +1,4 @@
-"""Synchronous DAPNET REST API client."""
+"""Synchronous DAPNET REST API."""
 
 import json
 import requests
@@ -10,8 +10,8 @@ from dapnet.models.news import NewsItem
 from dapnet.models.rubrics import Rubric
 
 
-class DapnetClient:
-    """Client for the DAPNET REST API 1.1.x."""
+class DapnetApi:
+    """DAPNET REST API 1.1.x."""
 
     def __init__(
         self,
