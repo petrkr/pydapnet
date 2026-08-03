@@ -52,6 +52,10 @@ class DapnetApi:
         """Set and validate credentials.
 
         Returns the authenticated user.
+
+        :raises DapnetAuthError: If the credentials are invalid.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
         """
 
         self._username = username
@@ -74,92 +78,173 @@ class DapnetApi:
         self._headers.pop("Authorization", None)
 
     def get_version(self) -> Version:
-        """Return DAPNET Core and API version."""
+        """Return DAPNET Core and API version.
+
+        :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         return Version.from_dict(self._get("core/version"))
 
     def get_stats(self) -> Stats:
-        """Return DAPNET network statistics."""
+        """Return DAPNET network statistics.
+
+        :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         return Stats.from_dict(self._get("stats"))
 
     def list_transmitters(self) -> list[Transmitter]:
-        """Return all transmitters."""
+        """Return all transmitters.
+
+        :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         data = self._get("transmitters")
         return [Transmitter.from_dict(item) for item in data]
 
     def get_transmitter(self, name: str) -> Transmitter:
-        """Return one transmitter by name."""
+        """Return one transmitter by name.
+
+        :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetNotFoundError: If the transmitter does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         return Transmitter.from_dict(self._get("transmitters/%s" % name))
 
     def list_transmitter_groups(self) -> list[TransmitterGroup]:
-        """Return all visible transmitter groups."""
+        """Return all visible transmitter groups.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         data = self._get("transmitterGroups")
         return [TransmitterGroup.from_dict(item) for item in data]
 
     def get_transmitter_group(self, name: str) -> TransmitterGroup:
-        """Return one transmitter group by name."""
+        """Return one transmitter group by name.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the transmitter group does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         return TransmitterGroup.from_dict(self._get("transmitterGroups/%s" % name))
 
     def list_nodes(self) -> list[Node]:
-        """Return all visible nodes."""
+        """Return all visible nodes.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         data = self._get("nodes")
         return [Node.from_dict(item) for item in data]
 
     def get_node(self, name: str) -> Node:
-        """Return one node by name."""
+        """Return one node by name.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the node does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         return Node.from_dict(self._get("nodes/%s" % name))
 
     def list_callsigns(self) -> list[Callsign]:
-        """Return all visible callsigns."""
+        """Return all visible callsigns.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         data = self._get("callsigns")
         return [Callsign.from_dict(item) for item in data]
 
     def get_callsign(self, name: str) -> Callsign:
-        """Return one callsign by name."""
+        """Return one callsign by name.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the callsign does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         return Callsign.from_dict(self._get("callsigns/%s" % name))
 
     def list_rubrics(self) -> list[Rubric]:
-        """Return all visible rubrics."""
+        """Return all visible rubrics.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         data = self._get("rubrics")
         return [Rubric.from_dict(item) for item in data]
 
     def get_rubric(self, name: str) -> Rubric:
-        """Return one rubric by name."""
+        """Return one rubric by name.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the rubric does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         return Rubric.from_dict(self._get("rubrics/%s" % name))
 
     def list_users(self) -> list[User]:
-        """Return all visible users."""
+        """Return all visible users.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         return [User.from_dict(item) for item in self._get("users")]
 
     def get_user(self, username: str) -> User:
-        """Return one user by username."""
+        """Return one user by username.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the user does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         return User.from_dict(self._get("users/%s" % username))
 
     def list_news(self) -> dict[str, list[NewsItem]]:
-        """Return news items grouped by rubric."""
+        """Return news items grouped by rubric.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         data = self._get("news")
@@ -169,14 +254,26 @@ class DapnetApi:
         }
 
     def get_news(self, rubric_name: str) -> list[NewsItem]:
-        """Return news items for one rubric."""
+        """Return news items for one rubric.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the rubric does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         data = self._get("news", params={"rubricName": rubric_name})
         return [NewsItem.from_dict(item) for item in data if item]
 
     def post_news(self, rubric_name: str, text: str, number: int) -> NewsItem:
-        """Publish a news item to a rubric."""
+        """Publish a news item to a rubric.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetNotFoundError: If the rubric does not exist.
+        :raises DapnetApiError: If the API returns another error response.
+        :raises DapnetRequestError: If the HTTP request fails.
+        """
 
         self._require_auth()
         payload = {
@@ -198,6 +295,10 @@ class DapnetApi:
 
         ``transmitter_group_names`` may be a list, tuple, or comma-separated
         string.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
         """
 
         self._require_auth()
@@ -211,6 +312,10 @@ class DapnetApi:
         """Return calls owned by a user.
 
         ``owner_name`` defaults to the client username when set to ``None``.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
         """
 
         self._require_auth()
@@ -231,6 +336,10 @@ class DapnetApi:
 
         ``callsign_names`` and ``transmitter_group_names`` may be lists,
         tuples, or comma-separated strings.
+
+        :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetApiError: If the API returns an error response.
+        :raises DapnetRequestError: If the HTTP request fails.
         """
 
         self._require_auth()
