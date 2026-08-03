@@ -15,10 +15,10 @@ class DapnetClient:
 
     def __init__(
         self,
-        username=None,
-        password=None,
-        base_url="https://hampager.de/api",
-        timeout=10,
+        username: str = None,
+        password: str = None,
+        base_url: str = "https://hampager.de/api",
+        timeout: int = 10,
     ):
         self._username = username
         self._password = password
@@ -47,13 +47,13 @@ class DapnetClient:
         data = self._get("rubrics")
         return [Rubric.from_dict(item) for item in data]
 
-    def get_rubric(self, name):
+    def get_rubric(self, name: str):
         """Return one rubric by name."""
 
         self._require_auth()
         return Rubric.from_dict(self._get("rubrics/%s" % name))
 
-    def list_news(self, rubric_name=None):
+    def list_news(self, rubric_name: str = None):
         """Return news items, optionally filtered by rubric."""
 
         self._require_auth()
@@ -61,7 +61,7 @@ class DapnetClient:
         data = self._get("news", params=params)
         return [NewsItem.from_dict(item) for item in data]
 
-    def post_news(self, rubric_name, text, number):
+    def post_news(self, rubric_name: str, text: str, number: int):
         """Publish a news item to a rubric."""
 
         self._require_auth()
@@ -72,7 +72,7 @@ class DapnetClient:
         }
         return NewsItem.from_dict(self._post("news", json=payload))
 
-    def list_calls(self, owner_name=None):
+    def list_calls(self, owner_name: str = None):
         """Return calls owned by a user.
 
         ``owner_name`` defaults to the client username when set to ``None``.
@@ -87,12 +87,16 @@ class DapnetClient:
 
     def post_call(
         self,
-        text,
+        text: str,
         call_sign_names,
         transmitter_group_names,
-        emergency=False,
+        emergency: bool = False,
     ):
-        """Create and distribute a DAPNET call."""
+        """Create and distribute a DAPNET call.
+
+        ``call_sign_names`` and ``transmitter_group_names`` may be lists,
+        tuples, or comma-separated strings.
+        """
 
         self._require_auth()
         payload = {
@@ -103,17 +107,17 @@ class DapnetClient:
         }
         return Call.from_dict(self._post("calls", json=payload))
 
-    def _get(self, path, params=None):
+    def _get(self, path: str, params=None):
         return self._request("GET", path, params=params)
 
-    def _post(self, path, json):
+    def _post(self, path: str, json):
         return self._request("POST", path, json=json)
 
     def _require_auth(self):
         if not (self._username and self._password):
             raise DapnetAuthError()
 
-    def _request(self, method, path, params=None, json=None):
+    def _request(self, method: str, path: str, params=None, json=None):
         url = self._base_url + path.lstrip("/")
         if params:
             url += "?" + _urlencode(params)
@@ -152,7 +156,7 @@ class DapnetClient:
         return payload
 
 
-def _json_dumps(value):
+def _json_dumps(value) -> str:
     return json.dumps(value, separators=(",", ":"))
 
 
@@ -166,7 +170,7 @@ def _list_value(value):
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
-def _base64_encode(data):
+def _base64_encode(data) -> str:
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     output = []
     index = 0
@@ -189,14 +193,14 @@ def _base64_encode(data):
     return "".join(output)
 
 
-def _urlencode(params):
+def _urlencode(params) -> str:
     parts = []
     for key, value in params.items():
         parts.append("%s=%s" % (_quote(str(key)), _quote(str(value))))
     return "&".join(parts)
 
 
-def _quote(value):
+def _quote(value: str) -> str:
     safe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.-"
     output = []
     for char in value:

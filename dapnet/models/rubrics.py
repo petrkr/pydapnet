@@ -10,10 +10,10 @@ class Rubric(Model):
 
     def __init__(
         self,
-        name,
-        number,
+        name: str,
+        number: int,
         transmitter_group_names,
-        label,
+        label: str,
         owner_names,
         raw=None,
     ):

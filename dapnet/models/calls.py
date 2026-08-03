@@ -10,12 +10,12 @@ class Call(Model):
 
     def __init__(
         self,
-        text,
+        text: str,
         call_sign_names,
         transmitter_group_names,
-        emergency=False,
-        timestamp=None,
-        owner_name=None,
+        emergency: bool = False,
+        timestamp: str = None,
+        owner_name: str = None,
         raw=None,
     ):
         Model.__init__(self, raw)

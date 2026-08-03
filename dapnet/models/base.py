@@ -7,7 +7,7 @@ class Model:
     def __init__(self, raw=None):
         self.raw = raw or {}
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         attrs = []
         for name in self._repr_attrs:
             attrs.append("%s=%r" % (name, getattr(self, name)))

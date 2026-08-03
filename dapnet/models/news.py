@@ -10,11 +10,11 @@ class NewsItem(Model):
 
     def __init__(
         self,
-        text,
-        rubric_name,
-        number,
-        timestamp=None,
-        owner_name=None,
+        text: str,
+        rubric_name: str,
+        number: int,
+        timestamp: str = None,
+        owner_name: str = None,
         raw=None,
     ):
         Model.__init__(self, raw)
