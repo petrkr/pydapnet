@@ -555,6 +555,52 @@ def test_post_call_accepts_comma_separated_values() -> None:
     }
 
 
+def test_activate_rubrics_payload() -> None:
+    response = {
+        "number": 1,
+        "transmitterGroupNames": ["ok-all"],
+        "timestamp": "Aug 3, 2026, 10:39:42 PM",
+    }
+    session = FakeSession([login_response(), FakeResponse(200, response)])
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    activation = client.activate_rubrics(1, "ok-all")
+
+    assert activation.number == 1
+    assert activation.transmitter_group_names == ["ok-all"]
+    assert activation.timestamp == "Aug 3, 2026, 10:39:42 PM"
+    assert repr(activation) == (
+        "Activation(number=1, transmitter_group_names=['ok-all'], "
+        "timestamp='Aug 3, 2026, 10:39:42 PM')"
+    )
+    assert session.calls[1]["method"] == "POST"
+    assert session.calls[1]["url"] == "https://hampager.de/api/activation"
+    assert json.loads(session.calls[1]["data"]) == {
+        "number": 1,
+        "transmitterGroupNames": ["ok-all"],
+    }
+
+
+def test_activate_rubrics_accepts_comma_separated_values() -> None:
+    response = {
+        "number": 1,
+        "transmitterGroupNames": ["ok-all", "dl-all"],
+    }
+    session = FakeSession([login_response(), FakeResponse(200, response)])
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    client.activate_rubrics(1, "ok-all, dl-all")
+
+    assert json.loads(session.calls[1]["data"]) == {
+        "number": 1,
+        "transmitterGroupNames": ["ok-all", "dl-all"],
+    }
+
+
 def test_api_error() -> None:
     session = FakeSession(
         [

@@ -9,6 +9,7 @@ from dapnet.errors import (
     DapnetNotFoundError,
     DapnetRequestError,
 )
+from dapnet.models.activations import Activation
 from dapnet.models.calls import Call
 from dapnet.models.callsigns import Callsign
 from dapnet.models.core import Stats, Version
@@ -169,6 +170,23 @@ class DapnetApi:
             "number": number,
         }
         return NewsItem.from_dict(self._post("news", json=payload))
+
+    def activate_rubrics(self, number: int, transmitter_group_names):
+        """Send an activation call to a Skyper.
+
+        After successful reception, rubrics can be selected from the Skyper
+        Setup menu.
+
+        ``transmitter_group_names`` may be a list, tuple, or comma-separated
+        string.
+        """
+
+        self._require_auth()
+        payload = {
+            "number": number,
+            "transmitterGroupNames": _list_value(transmitter_group_names),
+        }
+        return Activation.from_dict(self._post("activation", json=payload))
 
     def list_calls(self, owner_name: str = None):
         """Return calls owned by a user.
