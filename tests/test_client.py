@@ -465,9 +465,15 @@ def test_login_returns_user() -> None:
     dapnet.api.requests = session
     client = DapnetApi()
 
+    assert client.user is None
+    assert client.logged_in is False
+
     user = client.login("ok1abc", "pass")
 
     assert user.name == "ok1abc"
+    assert client.user is user
+    assert client.user.admin is False
+    assert client.logged_in is True
     assert session.calls[0]["url"] == "https://hampager.de/api/users/ok1abc"
     assert session.calls[0]["headers"]["Authorization"] == "Basic b2sxYWJjOnBhc3M="
 
@@ -490,6 +496,8 @@ def test_failed_login_clears_credentials() -> None:
         client.login("ok1abc", "bad")
 
     assert len(session.calls) == 1
+    assert client.user is None
+    assert client.logged_in is False
     with pytest.raises(DapnetAuthError) as exc_info:
         client.list_calls()
 
@@ -505,6 +513,8 @@ def test_logout_clears_credentials() -> None:
 
     client.logout()
 
+    assert client.user is None
+    assert client.logged_in is False
     with pytest.raises(DapnetAuthError):
         client.list_calls()
     assert len(session.calls) == 1

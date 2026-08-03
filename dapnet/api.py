@@ -33,7 +33,20 @@ class DapnetApi:
         self._timeout = timeout
         self._username = None
         self._password = None
+        self._user = None
         self._headers = {"Accept": "application/json"}
+
+    @property
+    def user(self):
+        """Return the authenticated user or ``None``."""
+
+        return self._user
+
+    @property
+    def logged_in(self):
+        """Return ``True`` when the client has an authenticated user."""
+
+        return self._user is not None
 
     def login(self, username: str, password: str):
         """Set and validate credentials.
@@ -46,7 +59,8 @@ class DapnetApi:
         token = ("%s:%s" % (username, password)).encode("utf-8")
         self._headers["Authorization"] = "Basic " + _base64_encode(token)
         try:
-            return self.get_user(username)
+            self._user = self.get_user(username)
+            return self._user
         except Exception:
             self.logout()
             raise
@@ -56,6 +70,7 @@ class DapnetApi:
 
         self._username = None
         self._password = None
+        self._user = None
         self._headers.pop("Authorization", None)
 
     def get_version(self):
