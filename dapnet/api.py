@@ -266,8 +266,12 @@ class DapnetApi:
         data = self._get("news", params={"rubricName": rubric_name})
         return [NewsItem.from_dict(item) for item in data if item]
 
-    def post_news(self, rubric_name: str, text: str, number: int) -> NewsItem:
+    def post_news(self, rubric_name: str, text: str, position: int = None) -> NewsItem:
         """Publish a news item to a rubric.
+
+        :param rubric_name: The rubric name.
+        :param text: The news text.
+        :param position: Optional specific position for the skyper rubric (1-10).
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the rubric does not exist.
@@ -279,8 +283,14 @@ class DapnetApi:
         payload = {
             "text": text,
             "rubricName": rubric_name,
-            "number": number,
         }
+
+        if position:
+            if position < 1 or position > 10:
+                raise ValueError("position must be between 1 and 10")
+
+            payload["number"] = position
+
         return NewsItem.from_dict(self._post("news", json=payload))
 
     def activate_rubrics(
