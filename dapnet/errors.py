@@ -39,3 +39,7 @@ class DapnetApiError(DapnetError):
 
 class DapnetNotFoundError(DapnetApiError):
     """Raised when the DAPNET API returns 404."""
+
+
+class DapnetPermissionError(DapnetApiError):
+    """Raised when the DAPNET API returns 403."""

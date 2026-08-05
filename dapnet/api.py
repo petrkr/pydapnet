@@ -7,6 +7,7 @@ from dapnet.errors import (
     DapnetApiError,
     DapnetAuthError,
     DapnetNotFoundError,
+    DapnetPermissionError,
     DapnetRequestError,
 )
 from dapnet.models.activations import Activation
@@ -54,6 +55,7 @@ class DapnetApi:
         Returns the authenticated user.
 
         :raises DapnetAuthError: If the credentials are invalid.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -81,6 +83,7 @@ class DapnetApi:
         """Return DAPNET Core and API version.
 
         :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -91,6 +94,7 @@ class DapnetApi:
         """Return DAPNET network statistics.
 
         :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -101,6 +105,7 @@ class DapnetApi:
         """Return all transmitters.
 
         :raises DapnetAuthError: If invalid credentials are configured.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -113,6 +118,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If invalid credentials are configured.
         :raises DapnetNotFoundError: If the transmitter does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -123,6 +129,7 @@ class DapnetApi:
         """Return all visible transmitter groups.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -136,6 +143,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the transmitter group does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -147,6 +155,7 @@ class DapnetApi:
         """Return all visible nodes.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -160,6 +169,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the node does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -171,6 +181,7 @@ class DapnetApi:
         """Return all visible callsigns.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -184,6 +195,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the callsign does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -195,6 +207,7 @@ class DapnetApi:
         """Return all visible rubrics.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -208,6 +221,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the rubric does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -219,6 +233,7 @@ class DapnetApi:
         """Return all visible users.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -231,6 +246,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the user does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -242,6 +258,7 @@ class DapnetApi:
         """Return news items grouped by rubric.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -258,6 +275,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the rubric does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -275,6 +293,7 @@ class DapnetApi:
 
         :raises DapnetAuthError: If the client is not logged in.
         :raises DapnetNotFoundError: If the rubric does not exist.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -307,6 +326,7 @@ class DapnetApi:
         string.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -324,6 +344,7 @@ class DapnetApi:
         ``owner_name`` defaults to the client username when set to ``None``.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -348,6 +369,7 @@ class DapnetApi:
         tuples, or comma-separated strings.
 
         :raises DapnetAuthError: If the client is not logged in.
+        :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns an error response.
         :raises DapnetRequestError: If the HTTP request fails.
         """
@@ -407,6 +429,8 @@ class DapnetApi:
                 message = str(payload)
             if response.status_code == 401:
                 raise DapnetAuthError(message)
+            if response.status_code == 403:
+                raise DapnetPermissionError(response.status_code, message, payload)
             if response.status_code == 404:
                 raise DapnetNotFoundError(response.status_code, message, payload)
             raise DapnetApiError(response.status_code, message, payload)

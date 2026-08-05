@@ -6,7 +6,12 @@ import pytest
 
 import dapnet.api
 from dapnet.api import DapnetApi
-from dapnet.errors import DapnetApiError, DapnetAuthError, DapnetNotFoundError
+from dapnet.errors import (
+    DapnetApiError,
+    DapnetAuthError,
+    DapnetNotFoundError,
+    DapnetPermissionError,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -616,8 +621,8 @@ def test_api_error() -> None:
         [
             login_response(),
             FakeResponse(
-                403,
-                {"code": 4030, "name": "Forbidden", "message": "No permission"},
+                500,
+                {"code": 5000, "name": "Server Error", "message": "boom"},
             ),
         ]
     )
@@ -628,10 +633,39 @@ def test_api_error() -> None:
     with pytest.raises(DapnetApiError) as exc_info:
         client.list_news()
 
-    assert exc_info.value.status_code == 403
-    assert exc_info.value.message == "No permission"
+    assert exc_info.value.status_code == 500
+    assert exc_info.value.message == "boom"
     assert repr(exc_info.value) == (
-        "DapnetApiError(status_code=403, message='No permission')"
+        "DapnetApiError(status_code=500, message='boom')"
+    )
+
+
+def test_forbidden_response_raises_permission_error() -> None:
+    session = FakeSession(
+        [
+            login_response(),
+            FakeResponse(
+                403,
+                {
+                    "code": 4030,
+                    "name": "Forbidden",
+                    "message": "No permission for this request",
+                },
+            ),
+        ]
+    )
+    dapnet.api.requests = session
+    client = DapnetApi()
+    client.login("user", "pass")
+
+    with pytest.raises(DapnetPermissionError) as exc_info:
+        client.list_news()
+
+    assert exc_info.value.status_code == 403
+    assert exc_info.value.message == "No permission for this request"
+    assert repr(exc_info.value) == (
+        "DapnetPermissionError(status_code=403, "
+        "message='No permission for this request')"
     )
 
 
@@ -723,11 +757,11 @@ def test_list_calls_other_owner_forbidden() -> None:
     client = DapnetApi()
     client.login("ok1abc", "pass")
 
-    with pytest.raises(DapnetApiError) as exc_info:
+    with pytest.raises(DapnetPermissionError) as exc_info:
         client.list_calls("ok0yyy")
 
     assert session.calls[1]["url"] == "https://hampager.de/api/calls?ownerName=ok0yyy"
     assert repr(exc_info.value) == (
-        "DapnetApiError(status_code=403, "
+        "DapnetPermissionError(status_code=403, "
         "message='No permission for this request')"
     )
