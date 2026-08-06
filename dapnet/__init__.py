@@ -1,4 +1,4 @@
 """Python client library for DAPNET."""
 
-__version__ = "0.0.0"
+__version__ = "0.0.1.dev2026080301"
 __license__ = "MIT"
