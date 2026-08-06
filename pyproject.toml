@@ -22,7 +22,9 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
   "Topic :: Communications :: Ham Radio",
 ]
-dependencies = []
+dependencies = [
+  "requests",
+]
 
 [project.urls]
 Homepage = "https://github.com/petrkr/pydapnet"
