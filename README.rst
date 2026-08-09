@@ -26,7 +26,7 @@ Example
    api.post_news(
        rubric_name="example",
        text="Hello from pydapnet",
-       number=1,
+       position=1,
    )
 
 Status
