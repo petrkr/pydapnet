@@ -23,7 +23,7 @@ class DapnetAuthError(DapnetError):
 class DapnetApiError(DapnetError):
     """Raised when the DAPNET API returns an error response."""
 
-    def __init__(self, status_code: int, message: str, payload=None):
+    def __init__(self, status_code: int, message: str, payload: object | None = None):
         super().__init__("DAPNET API error %s: %s" % (status_code, message))
         self.status_code = status_code
         self.message = message

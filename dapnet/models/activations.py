@@ -12,8 +12,8 @@ class Activation(Model):
         self,
         number: int,
         transmitter_group_names: list[str],
-        timestamp: str = None,
-        raw=None,
+        timestamp: str | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.number = number

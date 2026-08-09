@@ -11,10 +11,10 @@ class Callsign(Model):
     def __init__(
         self,
         name: str,
-        description: str = None,
+        description: str | None = None,
         numeric: bool = False,
-        owner_names: list[str] = None,
-        raw=None,
+        owner_names: list[str] | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.name = name

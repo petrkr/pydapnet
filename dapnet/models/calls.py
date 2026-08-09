@@ -14,9 +14,9 @@ class Call(Model):
         callsign_names: list[str],
         transmitter_group_names: list[str],
         emergency: bool = False,
-        timestamp: str = None,
-        owner_name: str = None,
-        raw=None,
+        timestamp: str | None = None,
+        owner_name: str | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.text = text

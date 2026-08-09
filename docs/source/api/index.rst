@@ -20,6 +20,7 @@ Quick Reference
    dapnet.errors.DapnetApiError
    dapnet.errors.DapnetNotFoundError
    dapnet.errors.DapnetPermissionError
+   dapnet.errors.DapnetRequestError
 
 Detailed Documentation
 ----------------------

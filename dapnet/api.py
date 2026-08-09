@@ -29,7 +29,7 @@ class DapnetApi:
         self,
         base_url: str = "https://hampager.de/api",
         timeout: int = 10,
-    ):
+    ) -> None:
         self._base_url = base_url.rstrip("/") + "/"
         self._timeout = timeout
         self._username = None
@@ -38,7 +38,7 @@ class DapnetApi:
         self._headers = {"Accept": "application/json"}
 
     @property
-    def user(self) -> User:
+    def user(self) -> User | None:
         """Return the authenticated user or ``None``."""
 
         return self._user
@@ -224,6 +224,7 @@ class DapnetApi:
         :raises DapnetPermissionError: If the API denies permission.
         :raises DapnetApiError: If the API returns another error response.
         :raises DapnetRequestError: If the HTTP request fails.
+        :raises ValueError: If ``position`` is outside 1-10.
         """
 
         self._require_auth()
@@ -284,7 +285,12 @@ class DapnetApi:
         data = self._get("news", params={"rubricName": rubric_name})
         return [NewsItem.from_dict(item) for item in data if item]
 
-    def post_news(self, rubric_name: str, text: str, position: int = None) -> NewsItem:
+    def post_news(
+        self,
+        rubric_name: str,
+        text: str,
+        position: int | None = None,
+    ) -> NewsItem:
         """Publish a news item to a rubric.
 
         :param rubric_name: The rubric name.
@@ -304,7 +310,7 @@ class DapnetApi:
             "rubricName": rubric_name,
         }
 
-        if position:
+        if position is not None:
             if position < 1 or position > 10:
                 raise ValueError("position must be between 1 and 10")
 
@@ -315,7 +321,7 @@ class DapnetApi:
     def activate_rubrics(
         self,
         number: int,
-        transmitter_group_names,
+        transmitter_group_names: list[str] | tuple | str,
     ) -> Activation:
         """Send an activation call to a Skyper.
 
@@ -338,7 +344,7 @@ class DapnetApi:
         }
         return Activation.from_dict(self._post("activation", json=payload))
 
-    def list_calls(self, owner_name: str = None) -> list[Call]:
+    def list_calls(self, owner_name: str | None = None) -> list[Call]:
         """Return calls owned by a user.
 
         ``owner_name`` defaults to the client username when set to ``None``.
@@ -359,8 +365,8 @@ class DapnetApi:
     def post_call(
         self,
         text: str,
-        callsign_names,
-        transmitter_group_names,
+        callsign_names: list[str] | tuple | str,
+        transmitter_group_names: list[str] | tuple | str,
         emergency: bool = False,
     ) -> Call:
         """Create and distribute a DAPNET call.
@@ -383,17 +389,23 @@ class DapnetApi:
         }
         return Call.from_dict(self._post("calls", json=payload))
 
-    def _get(self, path: str, params=None):
+    def _get(self, path: str, params: dict | None = None) -> object:
         return self._request("GET", path, params=params)
 
-    def _post(self, path: str, json):
+    def _post(self, path: str, json: dict) -> object:
         return self._request("POST", path, json=json)
 
-    def _require_auth(self):
+    def _require_auth(self) -> None:
         if not (self._username and self._password):
             raise DapnetAuthError()
 
-    def _request(self, method: str, path: str, params=None, json=None):
+    def _request(
+        self,
+        method: str,
+        path: str,
+        params: dict | None = None,
+        json: dict | None = None,
+    ) -> object:
         url = self._base_url + path.lstrip("/")
         if params:
             url += "?" + _urlencode(params)
@@ -415,7 +427,7 @@ class DapnetApi:
         return self._handle_response(response)
 
     @staticmethod
-    def _handle_response(response):
+    def _handle_response(response: object) -> object:
         try:
             payload = response.json()
         except ValueError:
@@ -438,11 +450,11 @@ class DapnetApi:
         return payload
 
 
-def _json_dumps(value) -> str:
+def _json_dumps(value: object) -> str:
     return json.dumps(value, separators=(",", ":"))
 
 
-def _list_value(value):
+def _list_value(value: list[str] | tuple | str | None) -> list[str]:
     if value is None:
         return []
     if isinstance(value, list):
@@ -452,7 +464,7 @@ def _list_value(value):
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
-def _base64_encode(data) -> str:
+def _base64_encode(data: bytes) -> str:
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     output = []
     index = 0
@@ -475,7 +487,7 @@ def _base64_encode(data) -> str:
     return "".join(output)
 
 
-def _urlencode(params) -> str:
+def _urlencode(params: dict) -> str:
     parts = []
     for key, value in params.items():
         parts.append("%s=%s" % (_quote(str(key)), _quote(str(value))))

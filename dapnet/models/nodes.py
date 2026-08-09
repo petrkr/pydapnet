@@ -11,13 +11,13 @@ class Node(Model):
     def __init__(
         self,
         name: str,
-        version: str = None,
-        status: str = None,
-        longitude: str = None,
-        latitude: str = None,
-        owner_names: list[str] = None,
-        address: dict = None,
-        raw=None,
+        version: str | None = None,
+        status: str | None = None,
+        longitude: str | None = None,
+        latitude: str | None = None,
+        owner_names: list[str] | None = None,
+        address: dict | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.name = name

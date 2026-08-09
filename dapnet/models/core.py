@@ -8,7 +8,7 @@ class Version(Model):
 
     _repr_attrs = ("core", "api")
 
-    def __init__(self, core: str, api: str, raw=None) -> None:
+    def __init__(self, core: str, api: str, raw: dict | None = None) -> None:
         Model.__init__(self, raw)
         self.core = core
         self.api = api
@@ -42,7 +42,7 @@ class Stats(Model):
         nodes_online: int,
         transmitters_total: int,
         transmitters_online: int,
-        raw=None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.users = users

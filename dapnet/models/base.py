@@ -4,7 +4,7 @@
 class Model:
     """Base model with raw API data."""
 
-    def __init__(self, raw: dict = None) -> None:
+    def __init__(self, raw: dict | None = None) -> None:
         self.raw = raw or {}
 
     def __repr__(self) -> str:

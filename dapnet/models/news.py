@@ -13,9 +13,9 @@ class NewsItem(Model):
         text: str,
         rubric_name: str,
         number: int,
-        timestamp: str = None,
-        owner_name: str = None,
-        raw=None,
+        timestamp: str | None = None,
+        owner_name: str | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.text = text

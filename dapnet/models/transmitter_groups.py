@@ -11,10 +11,10 @@ class TransmitterGroup(Model):
     def __init__(
         self,
         name: str,
-        description: str = None,
-        transmitter_names: list[str] = None,
-        owner_names: list[str] = None,
-        raw=None,
+        description: str | None = None,
+        transmitter_names: list[str] | None = None,
+        owner_names: list[str] | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.name = name

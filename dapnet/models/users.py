@@ -12,8 +12,8 @@ class User(Model):
         self,
         name: str,
         admin: bool,
-        mail: str = None,
-        raw=None,
+        mail: str | None = None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.name = name

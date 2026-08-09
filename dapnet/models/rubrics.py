@@ -15,7 +15,7 @@ class Rubric(Model):
         transmitter_group_names: list[str],
         label: str,
         owner_names: list[str],
-        raw=None,
+        raw: dict | None = None,
     ) -> None:
         Model.__init__(self, raw)
         self.name = name
