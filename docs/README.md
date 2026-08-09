@@ -33,6 +33,8 @@ The workflow is defined in `.github/workflows/sphinx-docs.yml`.
 
 ## MicroPython Release Artifacts
 
+MicroPython support targets version 1.26.0 and newer.
+
 Tag builds also generate MicroPython release artifacts:
 
 - `pydapnet-<version>-mip.json`

@@ -20,6 +20,8 @@ Install from source in a virtual environment::
 MicroPython
 -----------
 
+MicroPython support targets version 1.26.0 and newer.
+
 Release tags build MicroPython artifacts automatically:
 
 * ``pydapnet-<version>-mip.json`` for ``mip``

@@ -13,7 +13,7 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
     env:
-      MPY_VERSIONS: "1.25.0 1.26.0"
+      MPY_VERSIONS: "1.26.0"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
