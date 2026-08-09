@@ -34,7 +34,7 @@ Post News
 
    api = DapnetApi()
    api.login("ok1abc", "secret")
-   api.post_news("example", "Hello from PyDapnet", 1)
+   api.post_news("example", "Hello from PyDapnet", position=1)
 
 Post Call
 ---------
