@@ -3,6 +3,8 @@ pydapnet
 
 Python client library for the DAPNET REST API.
 
+Documentation: https://petrkr.github.io/pydapnet/
+
 The current implementation targets the production DAPNET API 1.1.x exposed by
 ``https://hampager.de/api``.
 
